@@ -1,7 +1,6 @@
 package uk.co.selazarlabs.stage;
 
 
-import java.io.File;
 import java.time.Duration;
 
 import org.openqa.selenium.By;
@@ -11,12 +10,18 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
 
 public class SelazarUploadOrder {
 	
 	
 	@Test
-	public void Login(){
+	public void Login() throws AWTException  {
 		// Create driver
 		WebDriver driver = new ChromeDriver();
 		System.out.println("Test Started");
@@ -61,18 +66,26 @@ public class SelazarUploadOrder {
 	    BrowseButton.click();	    
 	    sleep(2);
 	    
-	    //Find the file
-	    WebElement fileInput = driver.findElement(By.cssSelector(".file-upload.text-center > .btn.btn-secondary")); // Replace with the actual ID of the file input element
-	    String filepath = "C:\\Users\\Juan Jo\\eclipse-workspace\\SelazarStage\\.\\1002csv.csv";
-	    fileInput.sendKeys(filepath);
-	    //System.out.println(file.getAbsolutePath());
-	    //fileInput.sendKeys(file.getAbsolutePath());
 	    
-	    //Click Upload button
-
+	    Robot robot = new Robot();
+	    String filePath = "C:\\Users\\Juan Jo\\Documents\\orders\\1002csv.csv";
+	    WebElement fileInput = driver.findElement(By.cssSelector(".file-upload.text-center > .btn.btn-secondary"));
+	    fileInput.click();
 	    
-	    //Close the driver
-	    //driver.quit();
+	    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+	    StringSelection stringSelection = new StringSelection(filePath);
+	    clipboard.setContents(stringSelection, null);
+	   
+	    robot.delay(1000); // Delay to ensure the clipboard content is ready
+	    robot.keyPress(KeyEvent.VK_CONTROL);
+	    robot.keyPress(KeyEvent.VK_V);
+	    robot.keyRelease(KeyEvent.VK_V);
+	    robot.keyRelease(KeyEvent.VK_CONTROL);
+	    robot.keyPress(KeyEvent.VK_ENTER);
+	    robot.keyRelease(KeyEvent.VK_ENTER);
+	    
+	    WebElement ClickUploadButton = driver.findElement(By.cssSelector(".btn.btn-primary"));
+	    ClickUploadButton.click();
 	}
 
 	private void sleep(int seconds) {
